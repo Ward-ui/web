@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const data = await response.json();
                 if (response.ok) {
                     localStorage.setItem("token", data.token);
-                    alert("Вы успешно вошли!");
+                    localStorage.setItem("role", data.role);
                     window.location.href = "/index.html"; // Переход на главную
                 } else {
                     alert("Ошибка: " + data.message);

@@ -2,12 +2,10 @@ const express = require('express');
 const router = express.Router();
 const { models } = require('../models/index')
 const { User } = models;
-console.log(models);
 
 // Получить всех пользователей
 router.get('/', async (req, res) => {
   try {
-    console.log(User);
     const users = await models.User.findAll(); // Метод findAll вызывается на модели User
     if (!users) {
       return res.status(404).json({ message: 'No users found' });

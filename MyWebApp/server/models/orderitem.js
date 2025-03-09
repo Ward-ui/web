@@ -12,12 +12,17 @@ module.exports = (sequelize, DataTypes) => {
     price: {
       type: DataTypes.FLOAT,
       allowNull: false
+    },
+    totalAmount: {
+      type: DataTypes.FLOAT,
+      allowNull: false
     }
   });
 
   OrderItem.associate = models => {
-  OrderItem.belongsTo(models.Order, { foreignKey: 'orderId' });
-  OrderItem.belongsTo(models.Product, { foreignKey: 'productId' });
+    OrderItem.belongsTo(models.Order, { foreignKey: 'orderId' });
+    OrderItem.belongsTo(models.Product, { foreignKey: 'productId' });
   }
+
   return OrderItem;
 };

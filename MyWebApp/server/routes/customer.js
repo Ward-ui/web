@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const { models } = require('../models/index');
 const { Customer } = models;
-console.log(models);
 
 // Получить всех клиентов
 router.get('/', async (req, res) => {

@@ -1,7 +1,9 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { User } = require('../models'); // Убедись, что импортируешь модель User
+const { models } = require("../models");
+const User = models.User; // Доступ к модели
+
 
 const router = express.Router();
 
@@ -34,7 +36,6 @@ router.post('/register', async (req, res) => {
     });
 
     // Отправка ответа с успехом
-    res.status(201).json({ message: 'Пользователь успешно зарегистрирован!' });
   } catch (error) {
     console.error("Ошибка при регистрации:", error);
     res.status(500).json({ message: 'Ошибка сервера', error: error.message });
@@ -58,8 +59,11 @@ router.post('/login', async (req, res) => {
       }
 
       // Генерация JWT токена
-      const token = jwt.sign({ userId: user.id }, 'your_jwt_secret', { expiresIn: '1h' });
-      res.json({ token });
+      const token = jwt.sign({ userId: user.id, role: user.role}, 'your_jwt_secret', { expiresIn: '1h' });
+
+      
+      res.json({ token, role: user.role }); // Добавляем роль
+
 
   } catch (error) {
       console.error("Ошибка при обработке запроса:", error);

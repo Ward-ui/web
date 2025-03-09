@@ -1,44 +1,22 @@
+const fs = require('fs');
+const path = require('path');
 const { Sequelize, DataTypes } = require('sequelize');
 
 // Подключение к базе данных
-const sequelize = new Sequelize('mysql://ISPr24-39_SevrukovKU:ISPr24-39_SevrukovKU@cfif31.ru:3306/ISPr24-39_SevrukovKU_Diplom',{
+const sequelize = new Sequelize('mysql://ISPr24-39_SevrukovKU:ISPr24-39_SevrukovKU@cfif31.ru:3306/ISPr24-39_SevrukovKU_Diplom', {
     logging: false
 });
-// Импорт моделей
-const User = require('./user')(sequelize, DataTypes);
-const Order = require('./order')(sequelize, DataTypes);
-const Product = require('./product')(sequelize, DataTypes);
-const Payment = require('./payment')(sequelize, DataTypes);
-const Shipment = require('./shipment')(sequelize, DataTypes);
-const Category = require('./category')(sequelize, DataTypes);
-const Customer = require('./customer')(sequelize, DataTypes);
-const Address = require('./address')(sequelize, DataTypes);
-const Review = require('./review')(sequelize, DataTypes);
-const Cart = require('./cart')(sequelize, DataTypes);
-const OrderItem = require('./orderitem')(sequelize, DataTypes);
-const Supplier = require('./supplier')(sequelize, DataTypes);
-const Stock = require('./stock')(sequelize, DataTypes);
-const Transaction = require('./transaction')(sequelize, DataTypes);
-const Discount = require('./discount')(sequelize, DataTypes);
 
-// Объединение моделей
-const models = {
-    User,
-    Order,
-    Product,
-    Payment,
-    Shipment,
-    Category,
-    Customer,
-    Address,
-    Review,
-    Cart,
-    OrderItem,
-    Supplier,
-    Stock,
-    Transaction,
-    Discount
-};
+// Загружаем модели динамически
+const models = {};
+const modelsPath = path.join(__dirname, '.'); // Путь к папке с моделями
+
+fs.readdirSync(modelsPath)
+    .filter(file => file.endsWith('.js') && file !== 'index.js') // Исключаем файл index.js
+    .forEach(file => {
+        const model = require(path.join(modelsPath, file))(sequelize, DataTypes);
+        models[model.name] = model;
+    });
 
 // Связываем модели
 Object.values(models).forEach(model => {
@@ -46,7 +24,6 @@ Object.values(models).forEach(model => {
         model.associate(models);
     }
 });
-
 
 sequelize.authenticate()
     .then(() => {
@@ -56,5 +33,4 @@ sequelize.authenticate()
         console.error('Ошибка при подключении к базе данных:', error);
     });
 
-// Экспортируем sequelize и модели
-module.exports = { User, sequelize, models };
+module.exports = { sequelize, models };
