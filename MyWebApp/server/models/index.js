@@ -14,17 +14,26 @@ const modelsPath = path.join(__dirname, '.'); // Путь к папке с мо�
 fs.readdirSync(modelsPath)
     .filter(file => file.endsWith('.js') && file !== 'index.js') // Исключаем файл index.js
     .forEach(file => {
-        const model = require(path.join(modelsPath, file))(sequelize, DataTypes);
-        models[model.name] = model;
+        try {
+            const model = require(path.join(modelsPath, file))(sequelize, DataTypes);
+            models[model.name] = model;
+            console.log(`Модель ${model.name} загружена`);
+            console.log(Object.keys(models)); // Должен содержать 'OrderItem'
+        } catch (error) {
+            console.error(`Ошибка при загрузке модели ${file}:`, error);
+        }
     });
 
 // Связываем модели
 Object.values(models).forEach(model => {
     if (model.associate) {
         model.associate(models);
+        console.log(`Ассоциации для модели ${model.name} установлены`);
     }
 });
 
+
+// Проверка подключения
 sequelize.authenticate()
     .then(() => {
         console.log('Подключение к базе данных успешно!');

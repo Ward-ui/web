@@ -1,60 +1,116 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const cartItemsContainer = document.getElementById("cartItems");
-    const totalPriceElement = document.getElementById("totalPrice");
-    const clearCartButton = document.getElementById("clearCart");
-  
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  
-    function updateCart() {
-      // Очистка контейнера корзины
-      cartItemsContainer.innerHTML = "";
-  
-      let totalPrice = 0;
-  
-      cart.forEach((item, index) => {
-        totalPrice += item.price * item.quantity;
-  
-        const cartItem = document.createElement("div");
-        cartItem.classList.add("cart-item", "d-flex", "justify-content-between", "align-items-center");
-        cartItem.innerHTML = `
-          <div>
-            <h5>${item.name}</h5>
-            <p>Цена: ${item.price} руб. | Количество: ${item.quantity}</p>
-          </div>
-          <button class="btn btn-danger" onclick="removeItem(${index})">Удалить</button>
-        `;
-        cartItemsContainer.appendChild(cartItem);
-      });
-  
-      totalPriceElement.textContent = `${totalPrice} руб.`;
-  
-      // Обновление корзины в localStorage
-      localStorage.setItem("cart", JSON.stringify(cart));
-    }
-  
-    // Удаление элемента из корзины
-    function removeItem(index) {
-      cart.splice(index, 1);
-      updateCart();
-    }
-  
-    // Очистка всей корзины
-    clearCartButton.addEventListener("click", () => {
-      cart = [];
-      updateCart();
-    });
-  
-    // Оформление заказа
-    document.getElementById("checkout").addEventListener("click", () => {
-      if (cart.length > 0) {
-        alert("Оформление заказа...");
-        // Здесь можно добавить логику оформления заказа
-      } else {
-        alert("Корзина пуста!");
+document.addEventListener("DOMContentLoaded", async () => {
+  const cartItemsContainer = document.getElementById("cart-items");
+  const totalAmountElement = document.getElementById("total-amount");
+  const checkoutBtn = document.getElementById("checkout-btn");
+  const clearCartBtn = document.getElementById("clear-cart-btn");
+
+  try {
+      const token = localStorage.getItem("token");
+      console.log("Токен:", token);
+      
+      if (!token) {
+          alert("Пожалуйста, авторизуйтесь");
+          window.location.href = "/login.html";
+          return;
       }
+
+      const response = await fetch("http://localhost:3000/api/cart", {
+          method: "GET",
+          headers: {
+              "Authorization": `Bearer ${token}`
+          }
+      });
+
+      if (!response.ok) {
+          throw new Error("Ошибка при получении корзины");
+      }
+
+      const data = await response.json();
+      const items = data.cart || [];
+      let totalAmount = 0;
+
+      if (items.length === 0) {
+          cartItemsContainer.innerHTML = "<p>Ваша корзина пуста</p>";
+          totalAmountElement.textContent = "Итого: 0 ₽";
+          return;
+      }
+
+      cartItemsContainer.innerHTML = "";
+      items.forEach(item => {
+          const itemTotal = item.price * item.quantity;
+          totalAmount += itemTotal;
+          cartItemsContainer.innerHTML += `
+              <div class="cart-item row align-items-center">
+                  <div class="col-3">
+                      <img src="${item.imageUrl || '/uploads/default-image.jpg'}" alt="${item.name}" class="product-image">
+                  </div>
+                  <div class="col-9">
+                      <h5>${item.name || 'Без названия'}</h5>
+                      <p>Цена: ${item.price || 0} ₽</p>
+                      <p>Количество: ${item.quantity || 1}</p>
+                      <p>Итого: ${itemTotal} ₽</p>
+                  </div>
+              </div>
+          `;
+      });
+
+      totalAmountElement.textContent = `Итого: ${totalAmount} ₽`;
+
+      // Обработка оформления заказа
+      checkoutBtn.addEventListener("click", async () => {
+        try {
+            // Передаем товары корзины в заказ
+            const orderItems = items.map(item => ({
+                productId: item.productId,
+                quantity: item.quantity,
+                price: item.price
+            }));
+
+            const orderResponse = await fetch("http://localhost:3000/api/orders", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ items: orderItems })
+            });
+    
+            if (!orderResponse.ok) {
+                throw new Error("Ошибка оформления заказа");
+            }
+    
+            const result = await orderResponse.json();
+            alert("Заказ успешно оформлен!");
+            window.location.href = "/profile.html";
+        } catch (error) {
+            console.error("Ошибка при оформлении заказа:", error);
+            alert("Произошла ошибка при оформлении заказа.");
+        }
     });
-  
-    // Инициализация корзины
-    updateCart();
-  });
-  
+
+      // Очистка корзины
+      clearCartBtn.addEventListener("click", async () => {
+          try {
+              const clearResponse = await fetch("http://localhost:3000/api/cart/clear", {
+                  method: "DELETE",
+                  headers: {
+                      "Authorization": `Bearer ${token}`
+                  }
+              });
+
+              if (!clearResponse.ok) {
+                  throw new Error("Ошибка при очистке корзины");
+              }
+
+              alert("Корзина успешно очищена");
+              window.location.reload();
+          } catch (error) {
+              console.error("Ошибка при очистке корзины:", error);
+              alert("Произошла ошибка при очистке корзины.");
+          }
+      });
+  } catch (error) {
+      console.error("Ошибка при загрузке корзины:", error);
+      cartItemsContainer.innerHTML = "<p>Произошла ошибка при загрузке корзины.</p>";
+  }
+});

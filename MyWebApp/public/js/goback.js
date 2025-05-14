@@ -11,7 +11,5 @@
   window.addEventListener('load', function() {
     const savedRole = localStorage.getItem('userRole');
     if (savedRole) {
-      console.log('Роль пользователя:', savedRole);
-      // Здесь можно реализовать логику, которая зависит от роли пользователя
     }
   });

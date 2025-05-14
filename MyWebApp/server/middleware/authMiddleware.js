@@ -1,20 +1,30 @@
-const jwt = require('jsonwebtoken');
-const SECRET_KEY = 'your_secret_key';
+const jwt = require("jsonwebtoken");
 
 const authMiddleware = (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
+    const token = req.header("Authorization")?.replace("Bearer ", "");
+    console.log("Токен", token);
+    if (!token) {
+        return res.status(401).json({ message: "Пожалуйста, авторизуйтесь" });
+    }
 
-  if (!token) {
-    return res.status(401).json({ message: 'No token provided' });
-  }
-
-  try {
-    const decoded = jwt.verify(token, SECRET_KEY);
-    req.user = decoded;
-    next();
-  } catch (error) {
-    res.status(401).json({ message: 'Invalid token' });
-  }
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);// Замените на свой ключ
+        req.user = decoded;
+        if (decoded.exp < Date.now() / 1000) {
+          return res.status(401).json({ message: "Срок действия токена истек" });
+      }
+        next();
+    } catch (error) {
+      console.error("ошибка при верификации токена:", error);
+        return res.status(401).json({ message: "Неверный токен" });
+    }
 };
 
-module.exports = authMiddleware;
+function adminMiddleware(req, res, next) {
+    if (req.user.role !== "admin") {
+        return res.status(403).json({ message: "Доступ запрещен" });
+    }
+    next();
+}
+
+module.exports = { authMiddleware, adminMiddleware };

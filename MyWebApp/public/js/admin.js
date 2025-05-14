@@ -13,7 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
           const response = await fetch(`/api/sales?sales=true&productId=${productId}&startDate=${startDate}&endDate=${endDate}`);
           const data = await response.json();
           if (response.ok) {
-            console.log(data); // Выводим данные о продажах
           } else {
             alert("Ошибка: " + data.message);
           }

@@ -16,8 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       const data = await response.json();
-      console.log("Полученные данные:", data);  // Это покажет структуру полученных данных
-      return data.totalIncome;  // Доступ к числовому значению
+      return data.totalIncome;  // Возвращаем общий доход
     } catch (error) {
       console.error("Ошибка при получении данных:", error);
       return 0; // Возвращаем 0 в случае ошибки
@@ -26,9 +25,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const monthIncome = await fetchData("month");
   const yearIncome = await fetchData("year");
-
-  console.log("Доход за месяц:", monthIncome);
-  console.log("Доход за год:", yearIncome);
 
   new Chart(ctx, {
     type: "bar",

@@ -5,24 +5,40 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true
     },
-    orderDate: {
-      type: DataTypes.DATE,
+    userId: {
+      type: DataTypes.INTEGER,
       allowNull: false
     },
-    totalAmount: { // общая стоимость
+    orderDate: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW
+    },
+    totalAmount: {
       type: DataTypes.FLOAT,
       allowNull: false
     },
     status: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      defaultValue: 'в ожидании'
+    },
+    paymentStatus: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'не оплачено'
     }
   });
 
+  // Ассоциации моделей
   Order.associate = models => {
-    Order.belongsTo(models.Customer, { foreignKey: 'customerId' });
-    Order.hasMany(models.OrderItem, { foreignKey: 'orderId' });
-  }
+    Order.belongsTo(models.User, { foreignKey: 'userId', onDelete: 'CASCADE' });
+    Order.hasMany(models.OrderItem, {
+      foreignKey: 'orderId',
+      as: 'OrderItems',  // ВАЖНО: Используем алиас для связи
+      onDelete: 'CASCADE'
+    });
+  };
 
   return Order;
 };

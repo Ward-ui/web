@@ -18,7 +18,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     stockQuantity: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      defaultValue: 0
+    },
+    imageUrl: {
+      type: DataTypes.STRING,
+      defaultValue: '/uploads/default-image.jpg' // если поле пустое
     }
   });
 

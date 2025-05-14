@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Информация о заказе</title>
+    <link rel="stylesheet" href="order.css">
+</head>
+<body>
+    <div class="order-container">
+        <h1>Информация о заказе</h1>
+        <div id="orderDetails">
+            <p><strong>Номер заказа:</strong> <span id="orderId"></span></p>
+            <p><strong>Дата заказа:</strong> <span id="orderDate"></span></p>
+            <p><strong>Статус:</strong> <span id="orderStatus"></span></p>
+            <p><strong>Общая сумма:</strong> <span id="totalAmount"></span> руб.</p>
+
+            <h2>Товары в заказе</h2>
+            <table id="orderItems">
+                <thead>
+                    <tr>
+                        <th>Продукт</th>
+                        <th>Количество</th>
+                        <th>Цена</th>
+                        <th>Сумма</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

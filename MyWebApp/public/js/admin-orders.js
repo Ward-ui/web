@@ -1,0 +1,76 @@
+document.addEventListener("DOMContentLoaded", async () => {
+    const orderList = document.getElementById("order-list");
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        alert("Пожалуйста, авторизуйтесь");
+        window.location.href = "/login.html";
+        return;
+    }
+
+    try {
+        // Получаем все заказы
+        const response = await fetch("http://localhost:3000/api/admin/orders", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error("Не удалось получить заказы");
+        }
+
+        const orders = await response.json();
+        if (orders.length === 0) {
+            orderList.innerHTML = "<p>Нет заказов</p>";
+        }
+
+        orders.forEach(order => {
+            const orderElement = document.createElement("div");
+            orderElement.classList.add("order-item");
+
+            // Проверяем, есть ли данные о пользователе
+            const username = order.User ? order.User.username : "Неизвестный пользователь";
+            const email = order.User ? order.User.email : "Неизвестный email";
+
+            orderElement.innerHTML = `
+                <h3>Заказ №${order.id}</h3>
+                <p>Пользователь: ${username} (${email})</p>
+                <p>Дата: ${new Date(order.orderDate).toLocaleDateString()}</p>
+                <p>Статус: <strong>${order.status}</strong></p>
+                <button onclick="updateOrderStatus(${order.id}, 'Выполнен')">Отметить как выполненный</button>
+                <button onclick="updateOrderStatus(${order.id}, 'Отменен')">Отметить как отмененный</button>
+            `;
+            orderList.appendChild(orderElement);
+        });
+    } catch (error) {
+        console.error("Ошибка:", error);
+        alert("Произошла ошибка при загрузке заказов.");
+    }
+});
+
+// Функция для изменения статуса заказа
+async function updateOrderStatus(orderId, status) {
+    const token = localStorage.getItem("token");
+    try {
+        const response = await fetch(`http://localhost:3000/api/admin/orders/${orderId}`, {
+            method: "PUT",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ status })
+        });
+
+        if (!response.ok) {
+            throw new Error("Не удалось обновить статус заказа");
+        }
+
+        alert("Статус заказа успешно обновлен");
+        window.location.reload();
+    } catch (error) {
+        console.error("Ошибка:", error);
+        alert("Произошла ошибка при изменении статуса заказа.");
+    }
+}

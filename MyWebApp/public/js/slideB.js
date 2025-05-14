@@ -4,8 +4,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const menuItems = document.getElementById("menuItems");
     const content = document.querySelector(".container"); // Основной контент
 
-    if (!menuToggle || !sidebar || !content) {
+    // Проверка, что элементы найдены
+    if (!menuToggle || !sidebar || !content || !menuItems) {
         console.error("Не найдены элементы меню!");
+        console.log("menuToggle:", menuToggle);
+        console.log("sidebar:", sidebar);
+        console.log("menuItems:", menuItems);
+        console.log("content:", content);
         return;
     }
 
@@ -44,8 +49,8 @@ document.addEventListener("DOMContentLoaded", () => {
         menuItems.innerHTML = `
             <li><a href="/create-admin.html">Создать новый профиль</a></li>
             <li><a href="/dashboard.html">Дашборд</a></li>
-            <li><a href="/add-product.html">Добавить новый продукт</a></li>
-            <li><a href="/orders.html">Просмотр всех заказов</a></li>
+            <li><a href="/addProduct.html">Добавить новый продукт</a></li>
+            <li><a href="/admin-orders.html">Просмотр всех заказов</a></li>
             <li><button id="logout">Выход</button></li>
         `;
     } else {

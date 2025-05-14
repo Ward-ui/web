@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Discount.associate = models => {
-  Discount.hasMany(models.Order, { foreignKey: 'discountId' });
+  
   }
   return Discount;
 };

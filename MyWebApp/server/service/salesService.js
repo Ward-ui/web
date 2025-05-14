@@ -1,8 +1,6 @@
 const { Op } = require('sequelize');
 const { models } = require('../models'); // Убедитесь, что путь правильный
 
-// Проверяем доступность модели Order
-console.log(models.Order);
 
 const Order = models.Order; // Доступ к модели Order
 

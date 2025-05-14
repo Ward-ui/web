@@ -5,6 +5,14 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true
     },
+    orderId: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    productId: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
     quantity: {
       type: DataTypes.INTEGER,
       allowNull: false
@@ -19,10 +27,15 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
 
+  // Ассоциации моделей
   OrderItem.associate = models => {
-    OrderItem.belongsTo(models.Order, { foreignKey: 'orderId' });
-    OrderItem.belongsTo(models.Product, { foreignKey: 'productId' });
-  }
+    OrderItem.belongsTo(models.Order, {
+        foreignKey: 'orderId',
+        as: 'Order',  // Используем такой же алиас
+        onDelete: 'CASCADE'
+    });
+    OrderItem.belongsTo(models.Product, { foreignKey: 'productId', onDelete: 'CASCADE' });
+  };
 
   return OrderItem;
 };
