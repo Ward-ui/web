@@ -31,14 +31,15 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   // Ассоциации моделей
-  Order.associate = models => {
-    Order.belongsTo(models.User, { foreignKey: 'userId', onDelete: 'CASCADE' });
-    Order.hasMany(models.OrderItem, {
-      foreignKey: 'orderId',
-      as: 'OrderItems',  // ВАЖНО: Используем алиас для связи
-      onDelete: 'CASCADE'
-    });
-  };
+ Order.associate = models => {
+  Order.belongsTo(models.User, { foreignKey: 'userId', onDelete: 'CASCADE' });
+  Order.hasMany(models.OrderItem, {
+    foreignKey: 'orderId',
+    as: 'OrderItems',
+    onDelete: 'CASCADE'
+  });
+};
+
 
   return Order;
 };

@@ -34,7 +34,7 @@ router.get('/', authMiddleware, async (req, res) => {
         if (!user) {
             return res.status(404).send('Пользователь не найден');
         }
-        res.json({ name: user.username, email: user.email });
+        res.json({ name: user.username, email: user.email, phone: user.phone, fullName: user.fullName, address: user.address });
     } catch (error) {
         res.status(500).send('Ошибка при получении данных пользователя');
     }
@@ -43,20 +43,26 @@ router.get('/', authMiddleware, async (req, res) => {
 
 // Обновить данные пользователя
 router.put("/", authMiddleware, async (req, res) => {
-    try {
-        const { name, email } = req.body;
-        const user = await User.findByPk(req.user.userId);  // Используем User
-        if (!user) {
-            return res.status(404).send("Пользователь не найден");
-        }
-        user.username = name || user.username;
-        user.email = email || user.email;
-        await user.save();
-        res.json({ message: "Данные успешно обновлены" });
-    } catch (error) {
-        res.status(500).send("Ошибка при обновлении данных пользователя");
-    }
+  try {
+    const { name, email, phone, fullName, address } = req.body;
+    const user = await User.findByPk(req.user.userId);
+    if (!user) return res.status(404).json({ message: "Пользователь не найден" });
+
+    user.name = name || user.name;
+    user.email = email || user.email;
+    user.phone = phone || user.phone;
+    user.fullName = fullName || user.fullName;
+    user.address = address || user.address;
+
+    await user.save();
+
+    res.json({ message: "Данные пользователя обновлены" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Ошибка сервера" });
+  }
 });
+
 
 
 module.exports = router;

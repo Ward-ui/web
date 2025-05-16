@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Меню справа</title>
+<style>
+  body {
+    margin: 0; font-family: Arial, sans-serif;
+  }
+  #menuToggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 1001;
+  }
+  #sidebar {
+    position: fixed;
+    top: 0; right: 0;
+    width: 250px; height: 100vh;
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.5);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    overflow-y: auto;
+  }
+  #sidebar.show {
+    transform: translateX(0);
+  }
+</style>
+</head>
+<body>
+
+<button id="menuToggle">Меню</button>
+
+<div id="sidebar">
+  <h2>Меню</h2>
+  <ul>
+    <li><a href="#" style="color: white;">Пункт 1</a></li>
+    <li><a href="#" style="color: white;">Пункт 2</a></li>
+    <li><a href="#" style="color: white;">Пункт 3</a></li>
+  </ul>
+</div>
+
+<script>
+  const btn = document.getElementById('menuToggle');
+  const sidebar = document.getElementById('sidebar');
+
+  btn.addEventListener('click', () => {
+    sidebar.classList.toggle('show');
+  });
+</script>
+
+</body>
+</html>

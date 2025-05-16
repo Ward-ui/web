@@ -33,32 +33,39 @@
         <h1 class="my-4">Мой профиль</h1>
 
         <!-- Форма для редактирования данных -->
-        <div id="edit-profile">
-            <h3>Редактировать данные</h3>
-            <form id="editForm">
-                <div class="mb-3">
-                    <label for="name" class="form-label">Имя</label>
-                    <input type="text" class="form-control" id="name" placeholder="Введите ваше имя">
-                </div>
-                <div class="mb-3">
-                    <label for="email" class="form-label">Электронная почта</label>
-                    <input type="email" class="form-control" id="email" placeholder="Введите ваш email">
-                </div>
-                <button type="submit" class="btn btn-primary">Сохранить изменения</button>
-            </form>
-        </div>
+        <form id="editForm">
+            <input type="text" id="name" name="name" placeholder="Имя" required />
+            <input type="email" id="email" name="email" placeholder="Email" required />
+            <input type="tel" id="phone" name="phone" placeholder="+7 (927) 686-44-43" required />
+            <input type="fullName" id="fullName" name="fullName" placeholder="ФИО Полностью" required>
+            <input type="address" name="address" id="address" placeholder="аддресс куда доставить" required>
 
-        <!-- Список заказов -->
-        <div id="orders">
-            <h3 class="my-4">Мои заказы</h3>
-            <div id="order-list" class="order-list">
-    <!-- Заказы пользователя будут загружены здесь -->
-            </div>
+            <button type="submit">Сохранить изменения</button>
+        </form>
 
-        </div>
-    </div>
+
+       <div>
+    <select id="filter-select">
+        <option value="">Все</option>
+        <option value="в ожидании">В ожидании</option>
+        <option value="ожидает оплаты">Ожидает оплаты</option>
+        <option value="подтвержден">Подтвержден</option>
+        <option value="отменен">Отменен</option>
+        <option value="выполнен">Выполнен</option>
+    </select>
+</div>
+
+<div>
+  <button id="menuToggle">☰ Меню</button>
+  <nav id="sidebar">
+    <ul id="menuItems"></ul>
+  </nav>
+</div>
+
+<div id="order-list" class="order-list"></div>
 
     <!-- Подключаем скрипт -->
+     <script src="js/slideB.js"></script>
     <script src="js/profile.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

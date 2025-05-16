@@ -3,7 +3,7 @@ const path = require('path');
 const router = express.Router();
 const multer = require('multer');
 const { models } = require('../models');
-const { Product } = models;
+const { Product, Category } = models;
 const authMiddleware = require('../middleware/authMiddleware');
 
 const storage = multer.diskStorage({
@@ -20,14 +20,36 @@ const upload = multer({ storage: storage});
 
 
 // Получить все товары
-router.get('/', async (req, res) => {
-  try {
-    const products = await Product.findAll();
-    res.json(products);
-  } catch (error) {
-    console.error('Ошибка при получении товаров:', error);
-    res.status(500).json({ message: error.message });
-  }
+router.get("/", async (req, res) => {
+    try {
+        const { categoryId } = req.query;
+        const filter = {};
+
+        if (categoryId) {
+            filter.categoryId = categoryId;
+        }
+
+        const products = await Product.findAll({
+            where: filter,
+            include: [{ model: Category, attributes: ["name"] }],
+        });
+
+        res.json(products);
+    } catch (error) {
+        console.error("Ошибка при получении продуктов:", error);
+        res.status(500).json({ message: "Ошибка сервера" });
+    }
+});
+
+// Получение всех категорий
+router.get("/categories", async (req, res) => {
+    try {
+        const categories = await Category.findAll();
+        res.json(categories);
+    } catch (error) {
+        console.error("Ошибка при получении категорий:", error);
+        res.status(500).json({ message: "Ошибка сервера" });
+    }
 });
 
 // Создать новый товар

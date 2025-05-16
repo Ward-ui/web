@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     email: {
       type: DataTypes.STRING,
-      allowNull: false, // Можно сделать обязательным, если требуется
+      allowNull: true, // Можно сделать обязательным, если требуется
       unique: true
     },
     passwordHash: { 
@@ -21,16 +21,32 @@ module.exports = (sequelize, DataTypes) => {
     role: { 
       type: DataTypes.STRING, 
       allowNull: false, 
-      defaultValue: 'user'  // Исправление: defaultValue вместо toDefaultValu
+      defaultValue: 'user'
+    },
+    phone: {
+       type: DataTypes.STRING,
+       allowNull: true,
+    },
+    fullName: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    address: {
+      type: DataTypes.STRING,
+      allowNull: true,
     }
-  }, {
+
+  }, 
+  {
     timestamps: true,  // Создаёт поля createdAt и updatedAt
   });
 
   User.associate = models => {
-    User.hasMany(models.Order, { foreignKey: 'userId' });
-    User.hasOne(models.Cart, { foreignKey: 'userId' });
-  };
+  User.hasMany(models.Order, { foreignKey: 'userId' });
+  User.hasOne(models.Cart, { foreignKey: 'userId' });
+  User.hasOne(models.Customer, { foreignKey: 'userId' });  // добавить связь
+};
+
 
   return User;
 };

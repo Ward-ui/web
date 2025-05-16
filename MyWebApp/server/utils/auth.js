@@ -16,7 +16,7 @@ const comparePassword = async (password, hashedPassword) => {
 
 // Создание токена
 const generateToken = (user) => {
-  return jwt.sign({ id: user.id, role: user.role }, SECRET_KEY, { expiresIn: '1h' });
+  return jwt.sign({ id: user.userId, role: user.role }, SECRET_KEY, { expiresIn: '1h' });
 };
 
 // Проверка токена

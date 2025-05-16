@@ -1,70 +1,59 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const menuToggle = document.getElementById("menuToggle");
-    const sidebar = document.getElementById("sidebar");
-    const menuItems = document.getElementById("menuItems");
-    const content = document.querySelector(".container"); // Основной контент
+  const menuToggle = document.getElementById("menuToggle");
+  const sidebar = document.getElementById("sidebar");
+  const menuItems = document.getElementById("menuItems");
 
-    // Проверка, что элементы найдены
-    if (!menuToggle || !sidebar || !content || !menuItems) {
-        console.error("Не найдены элементы меню!");
-        console.log("menuToggle:", menuToggle);
-        console.log("sidebar:", sidebar);
-        console.log("menuItems:", menuItems);
-        console.log("content:", content);
-        return;
+  if (!menuToggle || !sidebar || !menuItems) {
+    console.error("Не найдены элементы меню!");
+    return;
+  }
+
+  function getRoleFromToken() {
+    return localStorage.getItem("role") || "guest";
+  }
+
+  function collapseSidebar() {
+    sidebar.classList.remove("active");
+  }
+
+  function handleClickOutside(event) {
+    if (!sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
+      collapseSidebar();
     }
+  }
 
-    function getRoleFromToken() {
-        return localStorage.getItem("role") || "guest";
-    }
+  menuToggle.addEventListener("click", (event) => {
+    sidebar.classList.toggle("active");
+    event.stopPropagation();
+  });
 
-    function collapseSidebar() {
-        sidebar.classList.remove("active"); // Закрываем сайдбар
-    }
+  document.addEventListener("click", handleClickOutside);
 
-    // Проверка клика вне сайдбара
-    function handleClickOutside(event) {
-        if (!sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
-            collapseSidebar();
-        }
-    }
+  sidebar.addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
 
-    // Переключение меню
-    menuToggle.addEventListener("click", (event) => {
-        sidebar.classList.toggle("active");
-        event.stopPropagation(); // Останавливаем всплытие
-    });
+  // Наполнение меню
+  const role = getRoleFromToken();
+  if (role === "admin") {
+    menuItems.innerHTML = `
+      <li><a href="/create-admin.html">Создать новый профиль</a></li>
+      <li><a href="/dashboard.html">Дашборд</a></li>
+      <li><a href="/addProduct.html">Добавить новый продукт</a></li>
+      <li><a href="/admin-orders.html">Просмотр всех заказов</a></li>
+      <li><button id="logout">Выход</button></li>
+    `;
+  } else {
+    menuItems.innerHTML = `
+      <li><a href="/profile.html">Профиль</a></li>
+      <li><a href="/cart.html">Корзина</a></li>
+      <li><button id="logout">Выход</button></li>
+    `;
+  }
 
-    // Клик по контенту - скрываем сайдбар
-    document.addEventListener("click", handleClickOutside);
-
-    // Предотвращаем закрытие при клике по самому сайдбару
-    sidebar.addEventListener("click", (event) => {
-        event.stopPropagation();
-    });
-
-    // Наполнение меню в зависимости от роли
-    const role = getRoleFromToken();
-    if (role === "admin") {
-        menuItems.innerHTML = `
-            <li><a href="/create-admin.html">Создать новый профиль</a></li>
-            <li><a href="/dashboard.html">Дашборд</a></li>
-            <li><a href="/addProduct.html">Добавить новый продукт</a></li>
-            <li><a href="/admin-orders.html">Просмотр всех заказов</a></li>
-            <li><button id="logout">Выход</button></li>
-        `;
-    } else {
-        menuItems.innerHTML = `
-            <li><a href="/profile.html">Профиль</a></li>
-            <li><a href="/cart.html">Корзина</a></li>
-            <li><button id="logout">Выход</button></li>
-        `;
-    }
-
-    // Обработчик выхода
-    document.getElementById("logout").addEventListener("click", () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("role");
-        window.location.href = "/login.html";
-    });
+  document.getElementById("logout").addEventListener("click", () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    window.location.href = "/login.html";
+  });
 });

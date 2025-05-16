@@ -62,6 +62,8 @@ const discountRoutes = require('./routes/discount');
 const profileRoutes = require('./routes/profile');
 const adminOrdersRouter = require("./routes/adminOrders");
 const createAdmin = require("./routes/admin");
+const invoiceRoutes = require('./routes/invoice');
+
 
 // ======== Routes Middleware =========
 app.use('/api/auth', authRoutes);
@@ -83,6 +85,7 @@ app.use('/api/discounts', discountRoutes);
 app.use('/api/profile', profileRoutes);
 app.use("/api/admin/orders", adminOrdersRouter);
 app.use("/api/admin", createAdmin);
+app.use('/api/orders', invoiceRoutes);
 
 
 sequelize.sync({ force: false })
