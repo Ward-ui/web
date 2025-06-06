@@ -64,23 +64,23 @@ router.put('/:orderId', authMiddleware, async (req, res) => {
         // Проверяем, был ли заказ уже отменен
         // Проверяем, что заказ уже не отменен
 if (order.status.toLowerCase().replace("ё", "е") === "отменен") {
-    console.log(`Статус заказа: ${order.status}`);
+    
     return res.status(400).json({ message: "Этот заказ уже отменён" });
 }
 
 
-        console.log("Найден заказ:", order.id);
+        
 
         // Если статус изменяется на "отменён", возвращаем количество на склад
         if (status.toLowerCase() === "отменён") {
-            console.log("Меняем статус на 'отменён'. Возвращаем товары на склад...");
+            
             for (const item of order.OrderItems) {
                 const product = item.Product;
                 if (product) {
-                    console.log(`Возвращаем товар на склад: ${product.name}, Количество: ${item.quantity}`);
+                    
                     product.stockQuantity += item.quantity;
                     await product.save();
-                    console.log(`Обновлено количество товара на складе: ${product.name} - ${product.stockQuantity}`);
+                    
                 }
             }
         }
@@ -88,7 +88,7 @@ if (order.status.toLowerCase().replace("ё", "е") === "отменен") {
         // Обновляем статус заказа
         order.status = status.toLowerCase();
         await order.save();
-        console.log("Статус заказа обновлён:", order.status);
+       
 
         res.status(200).json({ message: "Статус заказа обновлён" });
     } catch (error) {

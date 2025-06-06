@@ -36,7 +36,7 @@ router.post('/register', async (req, res) => {
     // Генерация JWT токена для нового пользователя
     const token = jwt.sign(
   { userId: newUser.id, role: newUser.role },
-  'your_jwt_secret', 
+  process.env.JWT_SECRET, 
   { expiresIn: '1h' }
     );
 
@@ -70,7 +70,7 @@ router.post('/login', async (req, res) => {
     // Генерация JWT токена
     const token = jwt.sign(
       { userId: user.id, role: user.role },
-      'your_jwt_secret', 
+      process.env.JWT_SECRET, 
       { expiresIn: '1h' }
     );
 

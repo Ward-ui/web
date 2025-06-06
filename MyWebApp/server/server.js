@@ -5,7 +5,9 @@ const morgan = require('morgan');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const session = require('express-session');
-require('dotenv').config();
+require('dotenv').config({path: path.join(__dirname, '../.env')});
+
+
 
 const app = express();
 
@@ -16,8 +18,10 @@ app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, '../public')));
 app.use('/uploads', express.static(path.resolve(__dirname, '../uploads')));
 
+
+
 app.use(session({
-  secret: 'your_jwt_secret',
+  secret: process.env.JWT_SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: { secure: process.env.NODE_ENV === 'production' } // Продакшн настройка

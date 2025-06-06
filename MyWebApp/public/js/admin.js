@@ -14,10 +14,10 @@ document.addEventListener("DOMContentLoaded", () => {
           const data = await response.json();
           if (response.ok) {
           } else {
-            alert("Ошибка: " + data.message);
+            showNotification("Ошибка: " + data.message);
           }
         } catch (error) {
-          console.error("Ошибка:", error);
+          
         }
       });
     }

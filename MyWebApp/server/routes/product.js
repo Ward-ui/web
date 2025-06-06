@@ -4,7 +4,7 @@ const router = express.Router();
 const multer = require('multer');
 const { models } = require('../models');
 const { Product, Category } = models;
-const authMiddleware = require('../middleware/authMiddleware');
+const { authMiddleware, adminMiddleware } = require('../middleware/authMiddleware');
 
 const storage = multer.diskStorage({
   destination: (req, File, cb) => {
@@ -17,7 +17,26 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage});
 
+router.put("/:id/replenish", authMiddleware, adminMiddleware, async (req, res) => {
+  const productId = req.params.id;
+  const { amount } = req.body;
 
+  if (!amount || amount <= 0) {
+    return res.status(400).json({ message: "Некорректное количество" });
+  }
+
+  try {
+    const product = await Product.findByPk(productId);
+    if (!product) return res.status(404).json({ message: "Продукт не найден" });
+
+    product.stockQuantity += amount;
+    await product.save();
+
+    res.json({ message: "Запас обновлен", newStock: product.stockQuantity });
+  } catch (error) {
+    res.status(500).json({ message: "Ошибка сервера", error });
+  }
+});
 
 // Получить все товары
 router.get("/", async (req, res) => {

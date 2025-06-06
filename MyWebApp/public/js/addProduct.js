@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("addProductForm");
 
   if (!form) {
-    console.error("Форма не найдена!");
+    
     return;
   }
 
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const productImage = document.getElementById("productimage");
 
     if (!productName || !productPrice || !productStock || !categoryId) {
-      console.error("Не все элементы формы найдены!");
+      
       showNotification("Пожалуйста, убедитесь, что все поля присутствуют.");
       return;
     }
@@ -75,11 +75,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       } else {
         const errorText = await response.text();
-        console.error("Не JSON ответ:", errorText);
+        
         showNotification("Ошибка на сервере: неверный формат ответа.");
       }
     } catch (error) {
-      console.error("Ошибка при добавлении продукта:", error);
+      
       showNotification("Произошла ошибка при добавлении продукта.");
     }
   });

@@ -57,10 +57,6 @@ router.get("/:orderId/invoice", async (req, res) => {
     doc.text(`Телефон: ${customer.phone || user.phone || "Нет данных"}`);
     doc.text(`Email: ${customer.email || user.email || "Нет данных"}`);
     doc.text(`Адрес: ${customer.address || user.address || "Нет данных"}`);
-    console.log("покупатель:", customer.name || user.fullName);
-    console.log("телефон:", customer.phone || user.phone);
-    console.log("емеил:", customer.email || user.email);
-    console.log("аддресс:", customer.address || user.address);
     doc.moveDown(1);
 
     // Таблица товаров - заголовки

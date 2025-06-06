@@ -13,8 +13,8 @@
             a.click();
             a.remove();
         } catch (error) {
-            console.error("Ошибка при скачивании накладной:", error);
-            alert("Ошибка при скачивании накладной");
+            
+            showNotification("Ошибка при скачивании накладной");
         }
     }
 });
@@ -28,7 +28,7 @@
         const token = localStorage.getItem("token");
 
         if (!token) {
-            alert("Пожалуйста, авторизуйтесь");
+            showNotification("Пожалуйста, авторизуйтесь");
             window.location.href = "/login.html";
             return;
         }
@@ -71,8 +71,8 @@
             });
 
         } catch (error) {
-            console.error("Ошибка:", error);
-            alert("Произошла ошибка при загрузке заказов.");
+            
+            showNotification("Ошибка при загрузке заказов");
         }
     });
 
@@ -93,10 +93,10 @@
                 throw new Error("Не удалось обновить статус заказа");
             }
 
-            alert("Статус заказа успешно обновлен");
+            showNotification("Статус заказа успешно обновлен");
             window.location.reload();
         } catch (error) {
-            console.error("Ошибка:", error);
-            alert("Произошла ошибка при изменении статуса заказа.");
+            
+            showNotification("Ошибка при изменении статуса заказа");
         }
     }

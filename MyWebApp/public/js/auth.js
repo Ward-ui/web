@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const loginForm = document.getElementById("loginForm");
-
+    console.log()
     if (loginForm) {
         loginForm.addEventListener("submit", async (event) => {
             event.preventDefault(); // Предотвращаем перезагрузку страницы
@@ -22,11 +22,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     localStorage.setItem("role", data.role);
                     window.location.href = "/index.html"; // Переход на главную
                 } else {
-                    alert("Ошибка: " + data.message);
+                    showNotification("Ошибка: " + data.message);
                 }
             } catch (error) {
-                console.error("Ошибка:", error);
-                alert("Ошибка сервера");
+                
+                showNotification("Ошибка сервера");
             }
         });
     }

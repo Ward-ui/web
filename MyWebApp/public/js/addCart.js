@@ -7,11 +7,11 @@ document.addEventListener("DOMContentLoaded", async () => {
           const response = await fetch("http://localhost:3000/api/cart", { method: "DELETE" });
           if (!response.ok) throw new Error("Ошибка при очистке корзины");
 
-          alert("Корзина очищена");
+          showNotification("Корзина очищена");
           await loadCart(); // Обновляем корзину после очистки
       } catch (error) {
-          console.error(error);
-          alert("Не удалось очистить корзину");
+          
+          showNotification("Не удалось очистить корзину");
       }
   });
 });
@@ -68,17 +68,17 @@ async function loadCart() {
                   const response = await fetch(`http://localhost:3000/api/cart/${productId}`, { method: "DELETE" });
                   if (!response.ok) throw new Error("Ошибка при удалении товара");
 
-                  alert("Товар удален из корзины");
+                  showNotification("Товар удален из корзины");
                   await loadCart(); // Обновляем корзину
               } catch (error) {
-                  console.error(error);
-                  alert("Не удалось удалить товар");
+                  
+                  showNotification("Не удалось удалить товар");
               }
           });
       });
 
   } catch (error) {
-      console.error(error);
+      
       document.getElementById("cart-items").innerHTML = "<p>Ошибка при загрузке корзины.</p>";
   }
 }

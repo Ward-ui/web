@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const orderId = new URLSearchParams(window.location.search).get("orderId");
 
     if (!orderId) {
-        alert("Невозможно загрузить заказ без ID.");
+        showNotification("Невозможно загрузить заказ без ID.");
         return;
     }
 
@@ -25,8 +25,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         const orderData = await response.json();
         displayOrderDetails(orderData);
     } catch (error) {
-        console.error("Ошибка при загрузке заказа:", error);
-        alert("Ошибка при загрузке данных заказа");
+        
+        showNotification("Ошибка при загрузке данных заказа");
     }
 });
 

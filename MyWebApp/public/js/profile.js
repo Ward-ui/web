@@ -1,3 +1,5 @@
+const { or } = require("sequelize");
+
 // Функция валидации телефона формата +7 (XXX) XXX-XX-XX, +7XXX XXX XX XX, +7XXXXXXXXXX и т.п.
 function validatePhone(phone) {
   // Убираем все нецифровые символы, кроме + в начале
@@ -21,7 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const token = localStorage.getItem("token");
   if (!token) {
-    alert("Пожалуйста, авторизуйтесь");
+    showNotification("Пожалуйста, авторизуйтесь");
     window.location.href = "/login.html";
     return;
   }
@@ -41,7 +43,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (addressInput) addressInput.value = userData.address || "";
   } catch (error) {
     console.error("Ошибка при получении данных пользователя:", error);
-    alert("Произошла ошибка при загрузке данных пользователя.");
+    showNotification("Произошла ошибка при загрузке данных пользователя.");
     return;
   }
 
@@ -62,25 +64,32 @@ document.addEventListener("DOMContentLoaded", async () => {
       } else {
         filteredOrders.forEach(order => {
           const orderElement = document.createElement("div");
-          orderElement.classList.add("order-item");
-          orderElement.innerHTML = `
-            <div class="card mb-4 shadow-sm">
-              <div class="card-header bg-primary text-white">
-                Заказ №${order.id} | ${new Date(order.orderDate).toLocaleDateString()}
-              </div>
-              <div class="card-body">
-                <p><strong>Статус:</strong> ${order.status}</p>
-                <p><strong>Итого:</strong> ${order.totalAmount} ₽</p>
-                ${order.status === "ожидает оплаты" ? `<button class="pay-btn btn btn-success" data-order-id="${order.id}">Оплатить</button>` : ""}
-              </div>
-            </div>
-          `;
-          orderList.appendChild(orderElement);
+          orderElement.classList.add("col-md-6", "col-lg-4");
+         const productListId = `products-${order.id}`;
+
+  orderElement.innerHTML = `
+    <div class="card h-100 shadow-sm">
+      <div class="card-header bg-primary text-white">
+        <div class="d-flex justify-content-between">
+          <span>Заказ №${order.id}</span>
+          <span>${new Date(order.orderDate).toLocaleDateString()}</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <p><strong>Статус:</strong> ${order.status}</p>
+        <p><strong>Итого:</strong> ${order.totalAmount} ₽</p>
+        <button class="btn btn-outline-secondary show-products-btn mb-2" data-order-id="${order.id}">Показать товары</button>
+        <div class="product-list" id="${productListId}" style="display:none;"></div>
+        ${order.status === "ожидает оплаты" ? `<button class="pay-btn btn btn-success" data-order-id="${order.id}">Оплатить</button>` : ""}
+      </div>
+    </div>
+  `;
+  orderList.appendChild(orderElement);
         });
       }
     } catch (error) {
       console.error("Ошибка при получении заказов:", error);
-      alert("Произошла ошибка при загрузке заказов.");
+      showNotification("Произошла ошибка при загрузке заказов.");
     }
   }
 
@@ -103,14 +112,66 @@ document.addEventListener("DOMContentLoaded", async () => {
                 throw new Error("Ошибка при оплате заказа");
             }
 
-            alert("Оплата успешно выполнена");
+            showNotification("Оплата успешно выполнена");
             window.location.reload(); // Перезагружаем страницу после успешной оплаты
         } catch (error) {
             console.error("Ошибка при оплате заказа:", error);
-            alert("Произошла ошибка при оплате заказа");
+            showNotification("Произошла ошибка при оплате заказа");
         }
     }
 });
+
+document.addEventListener("click", async (e) => {
+  if (e.target.classList.contains("show-products-btn")) {
+    const orderId = e.target.dataset.orderId;
+    const productList = document.getElementById(`products-${orderId}`);
+    const token = localStorage.getItem("token");
+
+    // Если товары уже показаны, просто скрыть
+    if (productList.style.display === "block") {
+      productList.style.display = "none";
+      e.target.textContent = "Показать товары";
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:3000/api/orders/${orderId}/items`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) throw new Error("Ошибка при получении товаров заказа");
+
+      const Order  = await response.json();
+      const items = order.items || [];
+      console.log("товары:", items);
+      if (items.length === 0) {
+        productList.innerHTML = "<p>Нет товаров в заказе.</p>";
+      } else {
+        const list = document.createElement("ul");
+        list.classList.add("list-group");
+
+        items.forEach(item => {
+          const li = document.createElement("li");
+          li.classList.add("list-group-item");
+          li.innerHTML = `<strong>${item.productName}</strong> — ${item.quantity} x ${item.price} ₽`;
+          list.appendChild(li);
+        });
+
+        productList.innerHTML = "";
+        productList.appendChild(list);
+      }
+
+      productList.style.display = "block";
+      e.target.textContent = "Скрыть товары";
+    } catch (error) {
+      console.error("Ошибка загрузки товаров:", error);
+      showNotification("Не удалось загрузить товары заказа.");
+    }
+  }
+});
+
 
 
   if (filterSelect) {
@@ -130,7 +191,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const updatetAddress = addressInput.value.trim();
 
       if (!validatePhone(updatedPhone)) {
-        alert("Введите корректный номер телефона в формате +7XXXXXXXXXX или +7 (XXX) XXX-XX-XX");
+        showNotification("Введите корректный номер телефона в формате +7XXXXXXXXXX или +7 (XXX) XXX-XX-XX");
         phoneInput.focus();
         return;
       }
@@ -146,10 +207,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         if (!response.ok) throw new Error("Не удалось обновить данные пользователя");
-        alert("Данные успешно обновлены");
+        showNotification("Данные успешно обновлены");
       } catch (error) {
         console.error("Ошибка при обновлении данных профиля:", error);
-        alert("Произошла ошибка при обновлении данных.");
+        showNotification("Произошла ошибка при обновлении данных.");
       }
     });
   }

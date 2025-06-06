@@ -1,8 +1,16 @@
 /* Основные стили для всех страниц */
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     background-color: #f7f7f7;
+    min-height: 100vh;
 }
 
 h1, h2, h3 {
@@ -13,6 +21,7 @@ h1, h2, h3 {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
+    flex: 1 0 auto;
 }
 
 /* Стили для заголовков */
@@ -47,104 +56,10 @@ form {
     margin-bottom: 20px;
 }
 
-/* Стили для кнопок */
-button {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-/* Стили для кнопки меню */
-#menuToggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#menuToggle:hover {
-    background-color: #0056b3;
-}
-
-/* Стили для выпадающего меню */
-#menuToggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    z-index: 1001;
-}
-
-#sidebar {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 250px;
-    height: 100vh;
-    background-color: #333;
-    color: white;
-    padding: 20px;
-    box-shadow: -2px 0 10px rgba(0,0,0,0.5);
-    transform: translateX(100%);
-    transition: transform 0.3s ease;
-    z-index: 1000;
-    overflow-y: auto;
-}
-
-/* Класс для показа меню */
-#sidebar.active {
-    transform: translateX(0);
-}
-
-/* Стили ссылок */
-#sidebar ul {
-    list-style: none;
-    padding: 0;
-}
-
-#sidebar ul li {
-    margin-bottom: 15px;
-}
-
-#sidebar ul li a, #sidebar ul li button {
-    color: white;
-    text-decoration: none;
-    font-size: 18px;
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-
-#sidebar ul li a:hover, #sidebar ul li button:hover {
-    color: #007bff;
-}
 
 
 /* Корректировка положения меню относительно навигационного блока */
-nav {
+nav.header {
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -154,7 +69,277 @@ nav {
     height: 60px;
 }
 
-.nav-container {
+.nav-container1 {
     display: flex;
     align-items: center;
+}
+
+
+
+/* --- Стили для формы авторизации --- */
+.login-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(to right, #007bff, #00c6ff);
+}
+
+.login-form {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.login-form h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.login-form button {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-form button:hover {
+    background-color: #0056b3;
+}
+
+.register-link {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.register-link a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.register-link a:hover {
+    text-decoration: underline;
+}
+
+
+footer {
+    background-color: #0056b3;
+    color: white;
+    padding: 20px 0;
+    
+    left: 0;
+    right: 0;
+    bottom: 0;
+    flex-shrink: 0;
+}
+
+
+footer p {
+    margin: 5px 0;
+}
+
+footer hr {
+    margin: 15px 0;
+}
+
+.review-card {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    max-width: 400px;
+}
+
+.review-author {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.review-text {
+    font-style: italic;
+    color: #555;
+}
+
+#reviewForm textarea {
+    resize: none;
+}
+
+
+#product-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.product-image {
+  width: 250px;      /* например, ширина 120 пикселей */
+  height: 250px;     /* высота 120 пикселей */
+  object-fit: cover; /* изображение обрежется, чтобы заполнить контейнер */
+  border-radius: 8px; /* опционально, скругление */
+}
+
+
+/* Стили карточек продуктов */
+.card {
+    width: 300px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card-title {
+    font-size: 1.4em;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.card-text {
+    margin-bottom: 10px;
+    color: #777;
+}
+
+.stock-quantity {
+    font-weight: bold;
+    color: #444;
+}
+
+/* Стили кнопки */
+.btn-primary {
+    background-color: #5A67D8;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #434190;
+}
+
+/* Стили для фильтра категорий */
+#category-filter {
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 30px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+}
+
+/* Медиа-запросы для адаптивности */
+@media (max-width: 768px) {
+    .card {
+        width: 100%;
+    }
+}
+
+
+/* --- Стили для формы создания администратора --- */
+#create-admin-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(to right, #007bff, #00c6ff);
+    padding: 20px;
+}
+
+#create-admin-wrapper h1 {
+    color: black;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#create-admin-form {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+}
+
+#create-admin-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+#create-admin-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+#create-admin-form button {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#create-admin-form button:hover {
+    background-color: #0056b3;
+}
+
+/* Адаптация на мобильных */
+@media (max-width: 600px) {
+    #create-admin-form {
+        padding: 20px;
+    }
 }

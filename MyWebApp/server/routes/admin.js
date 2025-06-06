@@ -40,7 +40,7 @@ router.post("/orders/:orderId/confirm", authMiddleware, async (req, res) => {
 
 router.post("/create-admin", authMiddleware, adminMiddleware, async (req, res) => {
     try {
-        console.log("Полученные данные:", req.body); // Логируем входные данные
+        
         const { username, password, email } = req.body;
 
         if (!username || !password || !email) {

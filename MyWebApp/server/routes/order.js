@@ -37,28 +37,38 @@ router.post('/sales', async (req, res) => {
     };
 
     // Добавляем фильтрацию по периоду
-    if (period === 'month') {
-      whereConditions.orderDate = {
-        [Sequelize.Op.gte]: new Date(new Date().setMonth(new Date().getMonth() - 1)),
-      };
-    } else if (period === 'year') {
-      whereConditions.orderDate = {
-        [Sequelize.Op.gte]: new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
-      };
-    }
+    const now = new Date();
 
-    // Получаем все заказы
-    console.log("Условия запроса:", whereConditions);
+// Для месяца — берем первый день предыдущего месяца (или текущего месяца?)
+// Чтобы получить продажи за текущий месяц с 1-го числа по сегодняшний день:
+const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1); // первый день следующего месяца
+
+// Для года — первый день января текущего года
+const startOfYear = new Date(now.getFullYear(), 0, 1);
+const endOfYear = new Date(now.getFullYear() + 1, 0, 1);
+
+if (period === 'month') {
+  whereConditions.orderDate = {
+    [Op.gte]: startOfMonth,
+    [Op.lt]: endOfMonth
+  };
+} else if (period === 'year') {
+  whereConditions.orderDate = {
+    [Op.gte]: startOfYear,
+    [Op.lt]: endOfYear
+  };
+}
+
+console.log('Период:', period);
+console.log('Условия where:', whereConditions);
+
+    
 
 const orders = await Order.findAll({
   where: whereConditions,
 });
 
-console.log("Найденные заказы:", orders);
-
-
-    // Логирование для проверки
-    console.log('Полученные заказы:', orders);
 
     // Рассчитываем общую выручку
     const totalIncome = orders.reduce((sum, order) => sum + order.totalAmount, 0);
@@ -108,11 +118,11 @@ router.post('/', authMiddleware, async (req, res) => {
       for (const item of items) {
           const product = await models.Product.findByPk(item.productId);
           if (!product) {
-              console.log(`Товар с ID ${item.productId} не найден`);
+              
               continue;
           }
 
-          console.log(`Добавляем товар в заказ: ${product.name}, Количество: ${item.quantity}`);
+          
 
           // Создаем запись в OrderItem
           await models.OrderItem.create({
@@ -141,7 +151,7 @@ router.post('/', authMiddleware, async (req, res) => {
 });
 
 // 
-router.get('/:orderId', authMiddleware, async (req, res) => {
+router.get('/:orderId/items', authMiddleware, async (req, res) => {
   try {
     const { orderId } = req.params;
 

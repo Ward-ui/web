@@ -17,8 +17,7 @@ fs.readdirSync(modelsPath)
         try {
             const model = require(path.join(modelsPath, file))(sequelize, DataTypes);
             models[model.name] = model;
-            console.log(`Модель ${model.name} загружена`);
-            console.log(Object.keys(models)); // Должен содержать 'OrderItem'
+            
         } catch (error) {
             console.error(`Ошибка при загрузке модели ${file}:`, error);
         }
@@ -28,7 +27,7 @@ fs.readdirSync(modelsPath)
 Object.values(models).forEach(model => {
     if (model.associate) {
         model.associate(models);
-        console.log(`Ассоциации для модели ${model.name} установлены`);
+        
     }
 });
 

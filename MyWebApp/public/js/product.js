@@ -29,29 +29,91 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
 
+      const isAdmin = localStorage.getItem("role") === "admin";
+
       // Отображаем продукты
       productListContainer.innerHTML = products.map(product => `
-        <div class="col-md-4 mb-4">
-          <div class="card" data-product-id="${product.id}">
-            <img src="${product.imageUrl || "/uploads/default-image.jpg"}" class="card-img-top" alt="${product.name}">
-            <div class="card-body">
-              <h5 class="card-title">${product.name}</h5>
-              <p class="card-text">${product.description}</p>
-              <p class="card-text">Цена: ${product.price} ₽</p>
-              <p class="card-text stock-quantity">В наличии: ${product.stockQuantity > 0 ? product.stockQuantity : "Нет в наличии"}</p>
-              <button class="add-to-cart btn btn-primary" data-product-id="${product.id}" ${product.stockQuantity <= 0 ? "disabled" : ""}>
-                ${product.stockQuantity > 0 ? "Купить" : "Товар закончился"}
-              </button>
-            </div>
+         <div class="col-md-4 mb-4">
+    <div class="card" data-product-id="${product.id}">
+      <img src="${product.imageUrl || "/uploads/default-image.jpg"}" class="card-img-top" alt="${product.name}">
+      <div class="card-body">
+        <h5 class="card-title">${product.name}</h5>
+        <p class="card-text">${product.description}</p>
+        <p class="card-text">Цена: ${product.price} ₽</p>
+        <p class="card-text stock-quantity">В наличии: ${product.stockQuantity > 0 ? product.stockQuantity : "Нет в наличии"}</p>
+        <button class="add-to-cart btn btn-primary" data-product-id="${product.id}" ${product.stockQuantity <= 0 ? "disabled" : ""}>
+          ${product.stockQuantity > 0 ? "Купить" : "Товар закончился"}
+        </button>
+        ${isAdmin ? `
+          <div class="mt-2 d-flex">
+            <input type="number" min="1" class="form-control me-2 stock-input" placeholder="Кол-во" style="max-width: 100px;">
+            <button class="btn btn-success replenish-btn" data-product-id="${product.id}">Пополнить</button>
           </div>
-        </div>
+        ` : ""}
+      </div>
+    </div>
+  </div>
       `).join("");
 
       // Добавляем обработчики кнопок "Купить"
       document.querySelectorAll(".add-to-cart").forEach(button => {
         button.addEventListener("click", handleAddToCart);
       });
+
+      // Обработчик пополнения запаса для админа
+document.querySelectorAll(".replenish-btn").forEach(button => {
+  button.addEventListener("click", async (e) => {
+    const card = e.target.closest(".card");
+    const productId = e.target.getAttribute("data-product-id");
+    const input = card.querySelector(".stock-input");
+    const amount = parseInt(input.value);
+
+    if (!amount || amount <= 0) {
+      showNotification("Введите корректное количество для пополнения");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = await fetch(`http://localhost:3000/api/products/${productId}/replenish`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({ amount })
+      });
+
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message);
+
+      showNotification("Запас успешно пополнен");
+
+      // Обновляем отображаемое количество
+      const stockText = card.querySelector(".stock-quantity");
+      const currentStock = parseInt(stockText.textContent.replace(/\D/g, "")) || 0;
+      const newStock = currentStock + amount;
+      stockText.textContent = `В наличии: ${newStock}`;
+
+      // Разблокировка кнопки "Купить" если была недоступна
+      const buyBtn = card.querySelector(".add-to-cart");
+      if (buyBtn.disabled) {
+        buyBtn.disabled = false;
+        buyBtn.textContent = "Купить";
+      }
+
+      input.value = ""; // очистить поле
+    } catch (err) {
+      showNotification(`Ошибка пополнения: ${err.message}`);
+    }
+  });
+});
     };
+
+    
+
+
 
     // Обработчик добавления в корзину
     const handleAddToCart = async (event) => {
@@ -60,7 +122,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const token = localStorage.getItem("token");
 
       if (!token) {
-        alert("Пожалуйста, авторизуйтесь для добавления товаров в корзину!");
+        showNotification("Пожалуйста, авторизуйтесь для добавления товаров в корзину!");
         return;
       }
 
@@ -91,10 +153,10 @@ document.addEventListener("DOMContentLoaded", async () => {
           stockQuantityElement.textContent = `В наличии: ${newStock}`;
         }
 
-        alert("Товар добавлен в корзину!");
+        showNotification("Товар добавлен в корзину!");
       } catch (error) {
         console.error("Ошибка при добавлении товара:", error);
-        alert(`Ошибка при добавлении товара: ${error.message}`);
+        showNotification(`Ошибка при добавлении товара: ${error.message}`);
       }
     };
 

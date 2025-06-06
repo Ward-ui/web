@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-const SECRET_KEY = 'your_secret_key'; // Лучше хранить в .env
+const SECRET_KEY = process.env.JWT_SECRET; // Лучше хранить в .env
 
 // Хеширование пароля
 const hashPassword = async (password) => {

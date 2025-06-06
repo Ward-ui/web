@@ -3,7 +3,7 @@ document.getElementById("adminForm").addEventListener("submit", async (e) => {
 
     const token = localStorage.getItem("token");
     if (!token) {
-        alert("Пожалуйста, авторизуйтесь");
+        showNotification("Пожалуйста, авторизуйтесь");
         window.location.href = "/login.html";
         return;
     }
@@ -27,10 +27,10 @@ document.getElementById("adminForm").addEventListener("submit", async (e) => {
             throw new Error(errorData.message || "Не удалось создать администратора");
         }
 
-        alert("Администратор успешно создан");
+        showNotification("Администратор успешно создан");
         window.location.href = "/index.html";
     } catch (error) {
         console.error("Ошибка:", error);
-        alert("Произошла ошибка при создании администратора");
+        showNotification("Произошла ошибка при создании администратора");
     }
 });

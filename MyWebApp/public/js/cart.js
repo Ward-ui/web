@@ -6,10 +6,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
       const token = localStorage.getItem("token");
-      console.log("Токен:", token);
+      
       
       if (!token) {
-          alert("Пожалуйста, авторизуйтесь");
+          showNotification("Пожалуйста, авторизуйтесь");
           window.location.href = "/login.html";
           return;
       }
@@ -80,11 +80,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
     
             const result = await orderResponse.json();
-            alert("Заказ успешно оформлен!");
+            showNotification("Заказ успешно оформлен!");
             window.location.href = "/profile.html";
         } catch (error) {
-            console.error("Ошибка при оформлении заказа:", error);
-            alert("Произошла ошибка при оформлении заказа.");
+            
+            showNotification("Произошла ошибка при оформлении заказа.");
         }
     });
 
@@ -102,15 +102,15 @@ document.addEventListener("DOMContentLoaded", async () => {
                   throw new Error("Ошибка при очистке корзины");
               }
 
-              alert("Корзина успешно очищена");
+              showNotification("Корзина успешно очищена");
               window.location.reload();
           } catch (error) {
-              console.error("Ошибка при очистке корзины:", error);
-              alert("Произошла ошибка при очистке корзины.");
+              
+              showNotification("Произошла ошибка при очистке корзины.");
           }
       });
   } catch (error) {
-      console.error("Ошибка при загрузке корзины:", error);
+      
       cartItemsContainer.innerHTML = "<p>Произошла ошибка при загрузке корзины.</p>";
   }
 });

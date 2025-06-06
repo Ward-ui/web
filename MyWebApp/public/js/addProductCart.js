@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
       const token = localStorage.getItem("token");
       if (!token) {
-        alert("Пожалуйста, войдите в аккаунт!");
+        showNotification("Пожалуйста, войдите в аккаунт!");
         return;
       }
   
@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const productDescription = document.getElementById("productDescription").value;
   
       if (!productName || !productPrice || !productDescription) {
-        alert("Пожалуйста, заполните все поля.");
+        showNotification("Пожалуйста, заполните все поля.");
         return;
       }
   
@@ -35,15 +35,15 @@ document.addEventListener("DOMContentLoaded", () => {
   
         if (response.ok) {
           const newProduct = await response.json();
-          alert(`Продукт "${newProduct.name}" успешно добавлен!`);
+          showNotification(`Продукт "${newProduct.name}" успешно добавлен!`);
           form.reset(); // Очищаем форму
         } else {
           const errorData = await response.json();
-          alert(`Ошибка: ${errorData.message}`);
+          showNotification(`Ошибка: ${errorData.message}`);
         }
       } catch (error) {
-        console.error("Ошибка при добавлении продукта:", error);
-        alert("Произошла ошибка при добавлении продукта.");
+        
+        showNotification("Произошла ошибка при добавлении продукта.");
       }
     });
   });
