@@ -29,7 +29,11 @@ module.exports = (sequelize, DataTypes) => {
 
   Product.associate = models => {
   Product.belongsTo(models.Category, { foreignKey: 'categoryId' });
-  Product.hasMany(models.OrderItem, { foreignKey: 'productId' });
+  Product.hasMany(models.OrderItem, { 
+    foreignKey: 'productId',
+    as: 'OrderItems',
+    onDelete: 'CASCADE'
+   });
   }
   return Product;
 };

@@ -16,16 +16,20 @@ const adminMiddleware = (req, res, next) => {
 router.get("/", authMiddleware, adminMiddleware, async (req, res) => {
     try {
         const orders = await Order.findAll({
-            include: [
+           include: [
                 { 
                     model: User, 
                     attributes: ["username", "email"] 
                 },
-                 {
-          model: OrderItem,
-          as: 'OrderItems', // Убедитесь, что используете алиас 'OrderItems'
-          include: [{ model: Product, attributes: ["name", "price"] }]
-        }
+                {
+                    model: OrderItem,
+                    as: 'OrderItems', 
+                    include: [{
+                        model: Product,
+                        as: 'Product',   // здесь добавляем алиас
+                        attributes: ["name", "price"]
+                    }]
+                }
             ]
         });
         res.json(orders);

@@ -1,4 +1,4 @@
-const { or } = require("sequelize");
+
 
 // Функция валидации телефона формата +7 (XXX) XXX-XX-XX, +7XXX XXX XX XX, +7XXXXXXXXXX и т.п.
 function validatePhone(phone) {
@@ -144,7 +144,7 @@ document.addEventListener("click", async (e) => {
       if (!response.ok) throw new Error("Ошибка при получении товаров заказа");
 
       const Order  = await response.json();
-      const items = order.items || [];
+      const items = Order.items || [];
       console.log("товары:", items);
       if (items.length === 0) {
         productList.innerHTML = "<p>Нет товаров в заказе.</p>";
@@ -155,7 +155,7 @@ document.addEventListener("click", async (e) => {
         items.forEach(item => {
           const li = document.createElement("li");
           li.classList.add("list-group-item");
-          li.innerHTML = `<strong>${item.productName}</strong> — ${item.quantity} x ${item.price} ₽`;
+          li.innerHTML = `<strong>${item.product.name}</strong> — ${item.quantity} x ${item.price} ₽`;
           list.appendChild(li);
         });
 

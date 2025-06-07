@@ -8,7 +8,7 @@ const { authMiddleware, adminMiddleware } = require('../middleware/authMiddlewar
 
 const storage = multer.diskStorage({
   destination: (req, File, cb) => {
-    cb(null, 'uploads/');
+    cb(null, path.join(__dirname, '..', 'uploads'));
   },
   filename: (req, File, cb) => {
     cb(null, Date.now() + path.extname(File.originalname));

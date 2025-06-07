@@ -11,12 +11,15 @@ router.get("/orders", authMiddleware, async (req, res) => {
         const orders = await Order.findAll({
             where: { userId: req.user.userId },
             include: [
-                {
-                   model: models.OrderItem,
-        as: 'OrderItems', // Алиас должен совпадать с тем, что используется в модели Order
-        include: [models.Product]
-                }
-            ],
+  {
+    model: models.OrderItem,
+    as: 'OrderItems',
+    include: [{
+      model: models.Product,
+      as: 'Product'  // алиас должен совпадать с определением в модели
+    }]
+  }
+],
             order: [["createdAt", "DESC"]]
         });
 

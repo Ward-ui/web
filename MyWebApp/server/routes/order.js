@@ -5,8 +5,7 @@ const Order = models.Order;
 const { sequelize } = require('../models');
 const { authMiddleware } = require('../middleware/authMiddleware');
 const { Sequelize, Op } = require('sequelize'); // Импортируем Sequelize и Op
-const { getIncomeForPeriod } = require("../service/salesService")
-
+const { getIncomeForPeriod } = require("../service/salesService");
 
 
 router.get("/sales", async (req, res) => {
@@ -156,13 +155,21 @@ router.get('/:orderId/items', authMiddleware, async (req, res) => {
     const { orderId } = req.params;
 
     const order = await Order.findOne({
-      where: { id: orderId },
-      include: [{
-        model: models.OrderItem,
-                as: 'OrderItems', // Указываем алиас, заданный в модели Order
-                include: [models.Product]
-      }]
-    });
+       where: { 
+         id: orderId,               // фильтр по id заказа
+        userId: req.user.userId
+        },
+            include: [
+            {
+              model: models.OrderItem,
+              as: 'OrderItems',
+              include: [{
+                model: models.Product,
+                as: 'Product'  // алиас должен совпадать с определением в модели
+              }]
+            }
+          ]
+        });
 
     if (!order) {
       return res.status(404).json({ message: "Заказ не найден" });

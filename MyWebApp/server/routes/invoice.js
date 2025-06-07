@@ -13,18 +13,24 @@ router.get("/:orderId/invoice", async (req, res) => {
 
     // Получаем заказ с вложениями
     const order = await Order.findByPk(orderId, {
+  include: [
+    {
+      model: User,
+      include: [Customer],
+    },
+    {
+      model: OrderItem,
+      as: "OrderItems",
       include: [
         {
-          model: User,
-          include: [Customer],
-        },
-        {
-          model: OrderItem,
-          as: "OrderItems",
-          include: [Product],
+          model: Product,
+          as: "Product",  // <--- Обязательно укажите алиас здесь!
         },
       ],
-    });
+    },
+  ],
+});
+
 
     if (!order) {
       return res.status(404).json({ message: "Заказ не найден" });
